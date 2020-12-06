@@ -22,7 +22,7 @@ def main(argv):
     write_msg_to_csv(msg_byturn,outFile,raceIDs)
     print("Messages saved to "+outFile)
 
-    #cleanTmpDir()
+    cleanTmpDir()
 
 def usage_msg():
     print("Usage: python pull_messages.py GAME_ID")
