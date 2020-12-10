@@ -156,6 +156,11 @@ def write_msg_to_mbox(outFile, raceIDs, apiKey, gameID):
     mb = mailbox.mbox(outFile, create=True)
     message_ids = []
 
+    # If the mbox file already exists, find all the message IDs and
+    # add them to the list so that we don't push duplicates to the mbox.
+    for msg in mb.itervalues():
+        message_ids.append(msg['Message-ID'])
+
     payload = {
         'apikey': apiKey,
         'gameid': gameID,
