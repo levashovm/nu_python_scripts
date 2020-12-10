@@ -6,7 +6,7 @@ Requires python to be installed on the computer: https://www.python.org/download
 1. pull_messages.py script
 
 Use:
-python pull_messages.py [GAME_ID]
+python pull_messages.py [GAME_ID] [USERNAME] [PASSWORD]
 
 GAME_ID is the 6-digit numeric game number that can be found in game history or in the URL of the game.
 
@@ -22,4 +22,10 @@ d) extract all of the messages and export them into messages_[GAME_ID].csv file.
 
 e) remove the files from game_data/tmp to save disk space
 
-f) the zip file will remain in game_data folder.  It can be deleted
+f) log in to planets.nu with the given username and password
+
+g) fetch all messages for all races for the game
+
+h) extract all the messages in mbox format to messages_[GAME_ID].mbox file. The file can be imported to an e-mail program such as Thunderbird
+
+i) the zip file will remain in game_data folder.  It can be deleted

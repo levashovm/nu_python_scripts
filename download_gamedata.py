@@ -49,7 +49,7 @@ def main(argv):
         else:
             print("Whole game file "+fName_full+" is already present")
         return (gameData,fName_full,gameID)
-            
+
 def usage_msg():
     print("Usage: python download_gamedata.py GAME_#")
     print("       Only completed games are supported at the moment")
