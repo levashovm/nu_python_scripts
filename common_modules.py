@@ -94,14 +94,26 @@ def getRaceIDs(gameData):
 
     return raceIDs
 
-def login(username, password):
-    data = {'username': username, 'password': password}
-    r = requests.post('http://api.planets.nu/login', data=data)
+def getRaceIDsLoggedIn(apiKey, gameID):
+    raceIDs = []
+    payload = {'apikey': apiKey, 'gameid': gameID}
+    r = requests.post('https://api.planets.nu/game/loadinfo?version=1', data=payload)
     if r.status_code == 200:
-        return(r.json()['apikey'])
-    else:
-        print('Login failed')
-        return False
+        for player in r.json()['players']:
+            raceIDs.append(player['raceid'])
+    return raceIDs
+
+def login(username, password):
+    payload = {'username': username, 'password': password}
+    r = requests.post('http://api.planets.nu/login', data=payload)
+    if r.status_code == 200:
+        resp = r.json()
+        if 'apikey' in resp:
+            print('Login successful.')
+            return(resp['apikey'])
+
+    print('Login failed.')
+    return False
 
 
 def write_msg_to_csv(msg_byturn,outFile,raceIDs):
