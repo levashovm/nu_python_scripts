@@ -150,7 +150,7 @@ def write_msg_to_csv(msg_byturn,outFile,raceIDs):
                     else:
                         if len(old_to_name) > 0:
                             row_list = [msg_turn, old_from_name,
-                                ', '.join(str(e) for e in old_to_name),
+                                '\r '.join(str(e) for e in old_to_name),
                                 old_msg_body.replace("<br/>","\r\n")]
                             csv_writer.writerow(row_list)
                         old_from_name = from_name
