@@ -232,6 +232,7 @@ def write_msg_to_mbox(outFile, raceIDs, apiKey, gameID):
                         r['Message-ID'] = reply_id
                         r['Date'] = datetime.datetime.strptime(reply['dateadded'], '%Y-%m-%dT%H:%M:%S')
                         r['References'] = msg_id
+                        r['In-Reply-To'] = msg_id
                         r.set_content(str(reply['message'].replace("<br/>","\r\n")))
                         mb.add(r)
                         message_ids.append(reply_id)
