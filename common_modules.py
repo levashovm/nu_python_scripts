@@ -7,6 +7,7 @@ import csv
 import mailbox
 import email
 import datetime
+import re
 
 import config
 
@@ -239,4 +240,5 @@ def write_msg_to_mbox(outFile, raceIDs, apiKey, gameID):
     mb.close()
 
 def emailAddressFromName(name: str, gameID: str):
-    return f'"{name}" <{name.replace("(", "").replace(")", "").replace(" ", "")}@{gameID}.planets.nu>'
+    email = re.sub(r'\([^()]*\)', '', name)
+    return f'"{name}" <{email.replace(" ", "")}@{gameID}.planets.nu>'
