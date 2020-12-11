@@ -183,56 +183,57 @@ def write_msg_to_mbox(outFile, raceIDs, apiKey, gameID):
         payload['playerid'] = str(race)
         resp = requests.post('https://api.planets.nu/account/ingameactivity', data=payload)
 
-        for msg in resp.json()['activity']:
-            # Create a unique ID for not adding duplicates
-            msg_id = f"<{str(msg['id'])}.{str(msg['orderid'])}.{str(msg['parentid'])}@planets.nu>"
-
-            # Create a participants list with both sender and recipients
-            participants = [i.strip() for i in msg['targetname'].split(',')]
-            participants.append(msg['sourcename'])
-
-            if msg_id not in message_ids:
-                # Remove sender from the recipients list. Don't care if something fails.
-                to = participants.copy()
-                try:
-                    to.remove(msg['sourcename'])
-                except ValueError:
-                    pass
-
-                # Construct the message and save to mailbox
-                m = email.message.EmailMessage()
-                m['From'] = msg['sourcename']
-                m['To'] = ', '.join(list(set(to)))
-                m['Subject'] = f"Turn {msg['turn']}"
-                m['Message-ID'] = msg_id
-                m['Date'] = datetime.datetime.strptime(msg['dateadded'], '%Y-%m-%dT%H:%M:%S')
-                m.set_content(str(msg['message'].replace("<br/>","\r\n")))
-                mb.add(m)
-                message_ids.append(msg_id)
-
-            for reply in msg['_replies']:
+        if 'activity' in resp.json():
+            for msg in resp.json()['activity']:
                 # Create a unique ID for not adding duplicates
-                reply_id = f"<{str(reply['id'])}.{str(reply['orderid'])}.{str(reply['parentid'])}@planets.nu>"
+                msg_id = f"<{str(msg['id'])}.{str(msg['orderid'])}.{str(msg['parentid'])}@planets.nu>"
 
-                if reply_id not in message_ids:
+                # Create a participants list with both sender and recipients
+                participants = [i.strip() for i in msg['targetname'].split(',')]
+                participants.append(msg['sourcename'])
+
+                if msg_id not in message_ids:
                     # Remove sender from the recipients list. Don't care if something fails.
                     to = participants.copy()
                     try:
-                        to.remove(reply['sourcename'])
+                        to.remove(msg['sourcename'])
                     except ValueError:
                         pass
 
-                    # Construct the reply and save to mailbox
-                    r = email.message.EmailMessage()
-                    r['From'] = reply['sourcename']
-                    r['To'] = ', '.join(list(set(to)))
-                    r['Subject'] = f"Turn {reply['turn']}"
-                    r['Message-ID'] = reply_id
-                    r['Date'] = datetime.datetime.strptime(reply['dateadded'], '%Y-%m-%dT%H:%M:%S')
-                    r['References'] = msg_id
-                    r.set_content(str(reply['message'].replace("<br/>","\r\n")))
-                    mb.add(r)
-                    message_ids.append(reply_id)
+                    # Construct the message and save to mailbox
+                    m = email.message.EmailMessage()
+                    m['From'] = msg['sourcename']
+                    m['To'] = ', '.join(list(set(to)))
+                    m['Subject'] = f"Turn {msg['turn']}"
+                    m['Message-ID'] = msg_id
+                    m['Date'] = datetime.datetime.strptime(msg['dateadded'], '%Y-%m-%dT%H:%M:%S')
+                    m.set_content(str(msg['message'].replace("<br/>","\r\n")))
+                    mb.add(m)
+                    message_ids.append(msg_id)
+
+                for reply in msg['_replies']:
+                    # Create a unique ID for not adding duplicates
+                    reply_id = f"<{str(reply['id'])}.{str(reply['orderid'])}.{str(reply['parentid'])}@planets.nu>"
+
+                    if reply_id not in message_ids:
+                        # Remove sender from the recipients list. Don't care if something fails.
+                        to = participants.copy()
+                        try:
+                            to.remove(reply['sourcename'])
+                        except ValueError:
+                            pass
+
+                        # Construct the reply and save to mailbox
+                        r = email.message.EmailMessage()
+                        r['From'] = reply['sourcename']
+                        r['To'] = ', '.join(list(set(to)))
+                        r['Subject'] = f"Turn {reply['turn']}"
+                        r['Message-ID'] = reply_id
+                        r['Date'] = datetime.datetime.strptime(reply['dateadded'], '%Y-%m-%dT%H:%M:%S')
+                        r['References'] = msg_id
+                        r.set_content(str(reply['message'].replace("<br/>","\r\n")))
+                        mb.add(r)
+                        message_ids.append(reply_id)
 
     # Close the mailbox to flush writes
     mb.close()
