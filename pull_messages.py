@@ -19,7 +19,7 @@ def main():
         parser.error("--format mbox requires --username and --password.")
 
     if args.format == 'csv':
-        (gameData, fName, gameID) = download_gamedata.main(args.gameid)
+        (gameData, fName, gameID) = download_gamedata.main(args.GAMEID)
 
         print("Unzipping archive to " + getTempFilesPath())
         unzipGame(fName)
