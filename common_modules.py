@@ -186,23 +186,23 @@ def write_msg_to_mbox(outFile, raceIDs, apiKey, gameID):
         if 'activity' in resp.json():
             for msg in resp.json()['activity']:
                 # Create a unique ID for not adding duplicates
-                msg_id = f"<{str(msg['id'])}.{str(msg['orderid'])}.{str(msg['parentid'])}@planets.nu>"
+                msg_id = f"<{str(msg['id'])}.{str(msg['orderid'])}.{str(msg['parentid'])}@{gameID}.planets.nu>"
 
                 # Create a participants list with both sender and recipients
-                participants = [i.strip() for i in msg['targetname'].split(',')]
-                participants.append(msg['sourcename'])
+                participants = [emailAddressFromName(i.strip(), gameID) for i in msg['targetname'].split(',')]
+                participants.append(emailAddressFromName(msg['sourcename'], gameID))
 
                 if msg_id not in message_ids:
                     # Remove sender from the recipients list. Don't care if something fails.
                     to = participants.copy()
                     try:
-                        to.remove(msg['sourcename'])
+                        to.remove(emailAddressFromName(msg['sourcename'], gameID))
                     except ValueError:
                         pass
 
                     # Construct the message and save to mailbox
                     m = email.message.EmailMessage()
-                    m['From'] = msg['sourcename']
+                    m['From'] = emailAddressFromName(msg['sourcename'], gameID)
                     m['To'] = ', '.join(list(set(to)))
                     m['Subject'] = f"Turn {msg['turn']}"
                     m['Message-ID'] = msg_id
@@ -213,19 +213,19 @@ def write_msg_to_mbox(outFile, raceIDs, apiKey, gameID):
 
                 for reply in msg['_replies']:
                     # Create a unique ID for not adding duplicates
-                    reply_id = f"<{str(reply['id'])}.{str(reply['orderid'])}.{str(reply['parentid'])}@planets.nu>"
+                    reply_id = f"<{str(reply['id'])}.{str(reply['orderid'])}.{str(reply['parentid'])}@{gameID}.planets.nu>"
 
                     if reply_id not in message_ids:
                         # Remove sender from the recipients list. Don't care if something fails.
                         to = participants.copy()
                         try:
-                            to.remove(reply['sourcename'])
+                            to.remove(emailAddressFromName(reply['sourcename'], gameID))
                         except ValueError:
                             pass
 
                         # Construct the reply and save to mailbox
                         r = email.message.EmailMessage()
-                        r['From'] = reply['sourcename']
+                        r['From'] = emailAddressFromName(reply['sourcename'], gameID)
                         r['To'] = ', '.join(list(set(to)))
                         r['Subject'] = f"Turn {reply['turn']}"
                         r['Message-ID'] = reply_id
@@ -237,3 +237,6 @@ def write_msg_to_mbox(outFile, raceIDs, apiKey, gameID):
 
     # Close the mailbox to flush writes
     mb.close()
+
+def emailAddressFromName(name: str, gameID: str):
+    return f'"{name}" <{name.replace("(", "").replace(")", "").replace(" ", "")}@{gameID}.planets.nu>'
