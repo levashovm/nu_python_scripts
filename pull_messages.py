@@ -38,9 +38,9 @@ def main():
     else:
         apiKey = login(args.username, args.password)
         if apiKey:
-            raceIDs = getRaceIDsLoggedIn(apiKey, args.gameid)
-            outFile = f'messages_{args.gameid}.mbox'
-            write_msg_to_mbox(outFile, raceIDs, apiKey, args.gameid)
+            raceIDs = getRaceIDsLoggedIn(apiKey, args.GAMEID)
+            outFile = f'messages_{args.GAMEID}.mbox'
+            write_msg_to_mbox(outFile, raceIDs, apiKey, args.GAMEID)
             print(f'Messages saved to {outFile}')
 
 
