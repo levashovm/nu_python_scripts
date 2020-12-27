@@ -7,7 +7,6 @@ import download_gamedata
 def main():
     parser = argparse.ArgumentParser(
         description='Pull messages in CSV or mbox format.',
-        epilog='NOTE: Only completed games are currently supported!'
     )
     parser.add_argument('--format', choices=['csv', 'mbox'], default='csv', help='Select either csv or mbox (default csv)')
     parser.add_argument('--username', '-u', help='planets.nu username (required when using mbox format)')

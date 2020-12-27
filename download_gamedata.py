@@ -35,8 +35,9 @@ def main(argv):
         print("Game "+str(gameID)+" in progress")
         #print("Loading for games in progress not yet supported")
 
-        if(len(argv) < 3):
-            usage_msg()
+        if(len(argv) < 3 or argv[1] == None or argv[2] == None):
+            print("    USERNAME and PASSWORD are required for games still in progress")
+            quit()
             
         apiKey = login(argv[1],argv[2])
         if apiKey:
@@ -62,7 +63,7 @@ def main(argv):
                 zipGame(fName_part)       
             return (gameData,fName_part,gameID)
         else:
-            disp('Login failed')
+            print('Login failed')
             quit()
     elif(gameStatus == 3):
         print("Game "+str(gameID)+" is finished")
@@ -76,9 +77,8 @@ def main(argv):
         return (gameData,fName_full,gameID)
 
 def usage_msg():
-    #print("Usage: python download_gamedata.py GAME_#")
-    #print("       Only completed games are supported at the moment")
-    print("Usage: python download_gamedata.py GAME_# [USERNAME] [PASSWORD]")
+    print("Usage:")
+    print("python download_gamedata.py GAME_# [USERNAME] [PASSWORD]")
     print("    USERNAME and PASSWORD are required for games still in progress")
     quit()
 
