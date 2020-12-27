@@ -8,11 +8,11 @@ import config
 from common_modules import *
 
 def main(argv):
-    if(len(sys.argv) < 2):
+    if(len(argv) < 1):
         usage_msg()
     else:
         try:
-            gameID = int(sys.argv[1])
+            gameID = int(argv[0])
         except (ValueError) as verr:
             usage_msg()
 
@@ -33,12 +33,37 @@ def main(argv):
         print("Game "+str(gameID)+" not started")
     elif(gameStatus == config.GAME_STATUS_IN_PROGRESS):
         print("Game "+str(gameID)+" in progress")
-        print("Loading for games in progress not yet supported")
+        #print("Loading for games in progress not yet supported")
 
-        #print("Enter Account Name:")
-        #acct_name = input()
-        #print("Enter Account Password:")
-        #acct_passw = input()
+        if(len(argv) < 3):
+            usage_msg()
+            
+        apiKey = login(argv[1],argv[2])
+        if apiKey:
+            if os.path.exists(fName_part):
+                print("Found partial game file.  Downloading missing turns.")
+                unzipGame(fName_part)
+            currTurn = gameData[1]['game']['turn']
+            playerID = getPlayerSlotFromName(gameData,argv[1]) 
+            if not playerID:
+                print("Could not find username"+argv[1]+" in the game")
+            else:
+                for k in range(currTurn):
+                    fName_out = os.path.join(getTempFilesPath(),'player'+str(playerID+1)+'-turn'+str(k+1)+'.trn')
+                    if not os.path.exists(fName_out):
+                        print('Downloaling turn '+str(k+1))
+                        payload = {'gameid': gameID, 'playerid': playerID+1,'apikey': apiKey, 'turn': k}
+                        r = requests.post('http://api.planets.nu/game/loadturn', data=payload)                
+                        f = open(fName_out,"w")
+                        rst_data = json.loads(r.text)
+                        f.write(json.dumps(rst_data['rst']))
+                        f.close()
+                        
+                zipGame(fName_part)       
+            return (gameData,fName_part,gameID)
+        else:
+            disp('Login failed')
+            quit()
     elif(gameStatus == 3):
         print("Game "+str(gameID)+" is finished")
         if not os.path.exists(fName_full):
@@ -51,11 +76,11 @@ def main(argv):
         return (gameData,fName_full,gameID)
 
 def usage_msg():
-    print("Usage: python download_gamedata.py GAME_#")
-    print("       Only completed games are supported at the moment")
-    #print("Usage: python download_gamedata.py GAME_# [ACCT_NAME] [PASSWORD]")
-    #print("    PLAYER_# and PASSWORD are optional for games still in progress")
+    #print("Usage: python download_gamedata.py GAME_#")
+    #print("       Only completed games are supported at the moment")
+    print("Usage: python download_gamedata.py GAME_# [USERNAME] [PASSWORD]")
+    print("    USERNAME and PASSWORD are required for games still in progress")
     quit()
 
 if __name__ == "__main__":
-    main(sys.argv)
+    main(sys.argv[1:])

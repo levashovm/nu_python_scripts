@@ -11,7 +11,7 @@ def main():
     )
     parser.add_argument('--format', choices=['csv', 'mbox'], default='csv', help='Select either csv or mbox (default csv)')
     parser.add_argument('--username', '-u', help='planets.nu username (required when using mbox format)')
-    parser.add_argument('--password', '-p', help='planets.nu password (required frem using mbox format)')
+    parser.add_argument('--password', '-p', help='planets.nu password (required when using mbox format)')
     parser.add_argument('GAMEID', help='Game ID to download messages from (must be finished)')
     args = parser.parse_args()
 
@@ -19,7 +19,7 @@ def main():
         parser.error("--format mbox requires --username and --password.")
 
     if args.format == 'csv':
-        (gameData, fName, gameID) = download_gamedata.main(args.GAMEID)
+        (gameData, fName, gameID) = download_gamedata.main((args.GAMEID,args.username,args.password))
 
         print("Unzipping archive to " + getTempFilesPath())
         unzipGame(fName)

@@ -52,6 +52,23 @@ def getTempFilesPath():
 def cleanTmpDir():
     for file1 in os.listdir(getTempFilesPath()):
         os.remove(os.path.join(getTempFilesPath(), file1))
+        
+def getPlayerSlotFromName(gameData,userName):
+    for playerID in range(len(gameData[1]['players'])):
+        if gameData[1]['players'][playerID]['username'] == userName:
+            return playerID
+    return None
+
+def zipGame(fName):
+    tmpDir = getTempFilesPath()
+    if os.path.exists(fName):
+        os.remove(fName)
+
+    with zipfile.ZipFile(fName,'w',zipfile.ZIP_DEFLATED) as zip_f:
+        for f in os.listdir(tmpDir):
+            zip_f.write(os.path.join(tmpDir,f),f)
+        
+    cleanTmpDir()
 
 def unzipGame(fName):
     tmpDir = getTempFilesPath()
