@@ -65,7 +65,7 @@ cd C:\Users\XXX\nu_python_scripts-main
 ```bash
 python pull_messages
 ```
-6. If there is an Error message `No module named ...` you can install that module using the `pip` utility.  In this example, requests was missing and it was installed with
+6. If there is an Error message `No module named ...` you can install that module using the `pip` utility.  In this example, the module `requests` was missing and it was installed with
 ```bash
 pip install requests
 ```
