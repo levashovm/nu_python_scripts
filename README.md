@@ -63,7 +63,7 @@ cd C:\Users\XXX\nu_python_scripts-main
 ```
 5. Try running
 ```bash
-python pull_messages
+python pull_messages.py
 ```
 6. If there is an Error message `No module named ...` you can install that module using the `pip` utility.  In this example, the module `requests` was missing and it was installed with
 ```bash
@@ -72,7 +72,7 @@ pip install requests
 ## Reading message history from the Libra War using Google Docs on Windows ##
 1. Run the script with the GAME# of the Libra War
 ```bash
-python pull_messages 267580
+python pull_messages.py 267580
 ```
 Note: A few of the turns failed to parse for an unknown reason
 
@@ -82,7 +82,7 @@ Note: A few of the turns failed to parse for an unknown reason
 ## Reading message history from the Libra War using Thunderbird on Windows ##
 1. Run the script with the `GAMEID` of the Libra War with additional arguments, including your planets.nu USERNAME and PASSWORD:
 ```bash
-python pull_messages 267580 --format mbox --username USERNAME --password PASSWORD
+python pull_messages.py 267580 --format mbox --username USERNAME --password PASSWORD
 ```
 2. Install Thunderbird Email client and launch it
 3. Unfortunately, there is no way to import messages into Thunderbird without setting up an account.  You can either set it up with a real account or a bogus account.  To use a bogus account, fill out `Your name` and `Email address` fields, click `Configure Manually`, `Advanced Config` and then disable `Check for new messages at startup` and `Check for new messages every...` tickboxes
